@@ -93,7 +93,7 @@ public:
 #elif defined(RETROMAME_MACOSX)
 	#define INI_PATH "$HOME/Library/Application Support/APP_NAME;$HOME/.APP_NAME"
 #else
-	#define INI_PATH "$HOME/.APP_NAME"
+	#define INI_PATH "$HOME/.config/APP_NAME;/storage/roms/bios/mame/ini"
 #endif // MACOSX
 #endif // INI_PATH
 

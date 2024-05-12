@@ -896,7 +896,7 @@ void core_options::parse_command_line(const std::vector<std::string> &args, int 
 //  parse_ini_file - parse a series of entries in
 //  an INI file
 //-------------------------------------------------
-
+extern char *g_mame_rom_dir;
 void core_options::parse_ini_file(util::core_file &inifile, int priority, bool ignore_unknown_options, bool always_override)
 {
 	std::ostringstream error_stream;
@@ -904,6 +904,8 @@ void core_options::parse_ini_file(util::core_file &inifile, int priority, bool i
 
 	// loop over lines in the file
 	char buffer[4096];
+	char new_data[4096] = {0};
+
 	while (inifile.gets(buffer, std::size(buffer)) != nullptr)
 	{
 		// find the extent of the name
@@ -955,6 +957,16 @@ void core_options::parse_ini_file(util::core_file &inifile, int priority, bool i
 				util::stream_format(error_stream, "Warning: unknown option in INI: %s\n", optionname);
 			}
 			continue;
+		}
+
+		if (optionname && !strcmp("rompath", optionname) && strlen(optiondata) && g_mame_rom_dir) {
+			if (optiondata[0] == '"') {
+				optiondata[0] = ';';
+				sprintf(new_data, "\"%s%s", g_mame_rom_dir, optiondata);
+			} else {
+				sprintf(new_data, "%s;%s", g_mame_rom_dir, optiondata);
+			}
+			optiondata = new_data;
 		}
 
 		// set the new data
